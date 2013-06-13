@@ -35,7 +35,7 @@
 /* Version as a string */
 #define VI_DATE_MAX 64
 /* Max length of a log entry date */
-#define VI_VERSION_STR "0.7-jp"
+#define VI_VERSION_STR "0.7"
 
 /*------------------------------- data structures ----------------------------*/
 
@@ -190,7 +190,7 @@ struct greppat Config_grep_pattern[VI_GREP_PATTERNS_MAX];
 int Config_grep_pattern_num = 0;    /* number of set patterns */
 
 /*----------------------------------- Tables ---------------------------------*/
-static char *vi_wdname[7] = {"月", "火", "水", "木", "金", "土", "日"};
+static char *vi_wdname[7] = {"Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"};
 #if 0
 static int vi_monthdays[12] = {31, 29, 31, 30, 31, 30 , 31, 31, 30, 31, 30, 31};
 #endif
@@ -2145,7 +2145,6 @@ void om_html_print_header(FILE *fp)
 	fprintf(fp,
 "<html>\n"
 "<head>\n"
-"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n"
 "<style>\n"
 "BODY, TD, B, LI, U, DIV, SPAN {\n"
 "	background-color: #ffffff;\n"
@@ -2264,7 +2263,6 @@ void om_html_print_header(FILE *fp)
 "	border-width: 1px;\n"
 "}\n"
 "</style>\n"
-"<link rel=\"stylesheet\" href=\"style.css\" type=\"text/css\" />\n"
 "</head>\n"
 "<body><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maintable\">\n"
 	);
@@ -2479,8 +2477,8 @@ void vi_print_hours_report(FILE *fp, struct vih *vih)
 			max = vih->hour[i];
 		tot += vih->hour[i];
 	}
-	Output->print_title(fp, "時間毎のアクセス数分布");
-	Output->print_subtitle(fp, "時間別でのヒット数の割合です");
+	Output->print_title(fp, "Hours distribution");
+	Output->print_subtitle(fp, "Percentage of hits in every hour of the day");
 	for (i = 0; i < 24; i++) {
 		char buf[8];
 		sprintf(buf, "%02d", i);
@@ -2496,8 +2494,8 @@ void vi_print_weekdays_report(FILE *fp, struct vih *vih)
 			max = vih->weekday[i];
 		tot += vih->weekday[i];
 	}
-	Output->print_title(fp, "1日毎のアクセス数分布");
-	Output->print_subtitle(fp, "曜日別でのヒット数の割合です");
+	Output->print_title(fp, "Weekdays distribution");
+	Output->print_subtitle(fp, "Percentage of hits in every day of the week");
 	for (i = 0; i < 7; i++) {
 		Output->print_numkeybar_entry(fp, vi_wdname[i], max, tot, vih->weekday[i]);
 	}
@@ -2597,11 +2595,11 @@ void vi_print_visits_report(FILE *fp, struct vih *vih)
 	int months;
 	void **table;
 
-	Output->print_title(fp, "ユニーク訪問者数(日毎)");
-	Output->print_subtitle(fp, "同じIP・ユーザーエージェント・アクセス日付が1回の訪問になります");
-	Output->print_numkey_info(fp, "訪問者数(ユニーク)",
+	Output->print_title(fp, "Unique visitors in each day");
+	Output->print_subtitle(fp, "Multiple hits with the same IP, user agent and access day, are considered a single visit");
+	Output->print_numkey_info(fp, "Number of unique visitors",
 			ht_used(&vih->visitors));
-	Output->print_numkey_info(fp, "解析された日数",
+	Output->print_numkey_info(fp, "Different days in logfile",
 			ht_used(&vih->date));
 	
 	if ((table = ht_get_array(&vih->date)) == NULL) {
@@ -2627,11 +2625,11 @@ void vi_print_visits_report(FILE *fp, struct vih *vih)
 	if (Config_process_monthly_visitors == 0) return;
 	tot = max = 0;
 	months = ht_used(&vih->month);
-	Output->print_title(fp, "ユニーク訪問者数(月毎)");
-	Output->print_subtitle(fp, "同じIP・ユーザーエージェント・アクセス日付が1回の訪問になります");
-	Output->print_numkey_info(fp, "訪問者数(ユニーク)",
+	Output->print_title(fp, "Unique visitors in each month");
+	Output->print_subtitle(fp, "Multiple hits with the same IP, user agent and access day, are considered a single visit");
+	Output->print_numkey_info(fp, "Number of unique visitors",
 			ht_used(&vih->visitors));
-	Output->print_numkey_info(fp, "解析された月数",
+	Output->print_numkey_info(fp, "Different months in logfile",
 			ht_used(&vih->month));
 	
 	if ((table = ht_get_array(&vih->month)) == NULL) {
@@ -2659,13 +2657,13 @@ void vi_print_googlevisits_report(FILE *fp, struct vih *vih)
 	int days = ht_used(&vih->date), i, months;
 	void **table;
 
-	Output->print_title(fp, "ユニーク訪問者数(グーグルから/日毎)");
-	Output->print_subtitle(fp, "バーの赤い部分は、Googleからの訪問の割合を示しています");
-	Output->print_numkey_info(fp, "訪問者数(ユニーク)",
+	Output->print_title(fp, "Unique visitors from Google in each day");
+	Output->print_subtitle(fp, "The red part of the bar expresses the percentage of visits originated from Google");
+	Output->print_numkey_info(fp, "Number of unique visitors",
 			ht_used(&vih->visitors));
-	Output->print_numkey_info(fp, "Googleからの訪問者数(ユニーク)",
+	Output->print_numkey_info(fp, "Number of unique visitors from google",
 			ht_used(&vih->googlevisitors));
-	Output->print_numkey_info(fp, "解析された日数",
+	Output->print_numkey_info(fp, "Different days in logfile",
 			ht_used(&vih->date));
 	
 	if ((table = ht_get_array(&vih->date)) == NULL) {
@@ -2687,13 +2685,13 @@ void vi_print_googlevisits_report(FILE *fp, struct vih *vih)
 	/* Montly */
 	if (Config_process_monthly_visitors == 0) return;
 	months = ht_used(&vih->month);
-	Output->print_title(fp, "ユニーク訪問者数(グーグルから/月毎)");
-	Output->print_subtitle(fp, "バーの赤い部分は、Googleからの訪問の割合を示しています");
-	Output->print_numkey_info(fp, "訪問者数(ユニーク)",
+	Output->print_title(fp, "Unique visitors from Google in each month");
+	Output->print_subtitle(fp, "The red part of the bar expresses the percentage of visits originated from Google");
+	Output->print_numkey_info(fp, "Number of unique visitors",
 			ht_used(&vih->visitors));
-	Output->print_numkey_info(fp, "Googleからの訪問者数(ユニーク)",
+	Output->print_numkey_info(fp, "Number of unique visitors from google",
 			ht_used(&vih->googlevisitors));
-	Output->print_numkey_info(fp, "解析された月数",
+	Output->print_numkey_info(fp, "Different months in logfile",
 			ht_used(&vih->month));
 	
 	if ((table = ht_get_array(&vih->month)) == NULL) {
@@ -2825,9 +2823,9 @@ void vi_print_referers_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyval_report(
 			fp,
-			"リファラ",
-			"google、yahooを除いた、訪問者数順のリファラです",
-			"リファラ数(ユニーク)",
+			"Referers",
+			"Referers ordered by visits (google, yahoo excluded)",
+			"Different referers",
 			Config_max_referers,
 			&vih->referers,
 			qsort_cmp_long_value);
@@ -2837,9 +2835,9 @@ void vi_print_pages_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyval_report(
 			fp,
-			"リクエストページ",
-			"リクエストされたページをヒット数順に並べています",
-			"リクエストページ数(ユニーク)",
+			"Requested pages",
+			"Page requests ordered by hits",
+			"Different pages requested",
 			Config_max_pages,
 			&vih->pages,
 			qsort_cmp_long_value);
@@ -2849,9 +2847,9 @@ void vi_print_error404_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyval_report(
 			fp,
-			"404エラー",
-			"存在しないページへのリクエストです",
-			"404エラーのリクエスト数(ユニーク)",
+			"404 Errors",
+			"Requests for missing documents",
+			"Different missing documents requested",
 			Config_max_error404,
 			&vih->error404,
 			qsort_cmp_long_value);
@@ -2861,9 +2859,9 @@ void vi_print_pageviews_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyvalbar_report(
 			fp,
-			"ページビュー(訪問者毎)",
-			"訪問者毎のページリクエスト数です",
-			"ドキュメント数(ユニーク(イメージはカウントされません))",
+			"Pageviews per visit",
+			"Number of pages requested per visit",
+			"Only documents are counted (not images). Reported ranges:",
 			100,
 			&vih->pageviews_grouped,
 			qsort_cmp_long_value);
@@ -2873,9 +2871,9 @@ void vi_print_images_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyval_report(
 			fp,
-			"リクエストされた画像、CSS",
-			"画像とCSSのリクエストをヒット数順に並べています",
-			"画像・CSSリクエスト数(ユニーク)",
+			"Requested images and CSS",
+			"Images and CSS requests ordered by hits",
+			"Different images and CSS requested",
 			Config_max_images,
 			&vih->images,
 			qsort_cmp_long_value);
@@ -2885,9 +2883,9 @@ void vi_print_agents_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyval_report(
 			fp,
-			"ユーザエージェント",
-			"ユーザエージェントを訪問数順に並べています",
-			"エージェント数(ユニーク)",
+			"User agents",
+			"The entire user agent string ordered by visits",
+			"Different agents",
 			Config_max_agents,
 			&vih->agents,
 			qsort_cmp_long_value);
@@ -2897,9 +2895,9 @@ void vi_print_os_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyvalbar_report(
 			fp,
-			"オペレーティングシステム",
-			"訪問数毎のオペレーティングシステムです",
-			"OSの種類",
+			"Operating Systems",
+			"Operating Systems by visits",
+			"Different operating systems listed",
 			100,
 			&vih->os,
 			qsort_cmp_long_value);
@@ -2909,9 +2907,9 @@ void vi_print_browsers_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyvalbar_report(
 			fp,
-			"ブラウザ",
-			"利用されたブラウザを訪問数順に並べています",
-			"ブラウザの種類",
+			"Browsers",
+			"Browsers used by visits",
+			"Different browsers listed",
 			100,
 			&vih->browsers,
 			qsort_cmp_long_value);
@@ -2933,35 +2931,35 @@ void vi_print_google_keyphrases_report(FILE *fp, struct vih *vih)
 {
 	vi_print_keyphrases_report(
 			fp,
-			"Google検索キーワード",
-			"Google検索に使用されたキーワードを訪問数順に並べています",
-			"キーワード数(ユニーク)",
+			"Google Keyphrases",
+			"Keyphrases used in google searches ordered by visits",
+			"Total number of keyphrases",
 			Config_max_google_keyphrases,
 			&vih->googlekeyphrases,
 			qsort_cmp_long_value,
-	                "http://www.google.com/search?q=");
+			"http://www.google.com/search?q=");
 }
 
 void vi_print_yahoo_keyphrases_report(FILE *fp, struct vih *vih)
 {
 	vi_print_keyphrases_report(
 			fp,
-			"Yahoo検索キーワード",
-			"Yahoo検索に使用されたキーワードを訪問数順に並べています",
-			"キーワード数(ユニーク)",
+			"Yahoo Keyphrases",
+			"Keyphrases used in yahoo searches ordered by visits",
+			"Total number of keyphrases",
 			Config_max_yahoo_keyphrases,
 			&vih->yahookeyphrases,
 			qsort_cmp_long_value,
-			"http://search.yahoo.co.jp/search?p=");
+			"http://uk.search.yahoo.com/search?p=");
 }
 
 void vi_print_tld_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyvalbar_report(
 			fp,
-			"ドメイン",
-			"ドメインを訪問数順に並べています",
-			"ドメイン(ユニーク)",
+			"Domains",
+			"Top Level Domains sorted by visits",
+			"Total number of Top Level Domains",
 			Config_max_tld,
 			&vih->tld,
 			qsort_cmp_long_value);
@@ -2971,9 +2969,9 @@ void vi_print_robots_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyval_report(
 			fp,
-			"ロボット、ウェブスパイダ",
-			"MSIECrawlerを除いた、エージェントがリクエストしたrobots.txtです",
-			"ロボット数(ユニーク)",
+			"Robots and web spiders",
+			"Agents requesting robots.txt. MSIECrawler excluded.",
+			"Total number of different robots",
 			Config_max_robots,
 			&vih->robots,
 			qsort_cmp_long_value);
@@ -3019,9 +3017,9 @@ void vi_print_googled_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keytime_report(
 			fp,
-			"Google化されたページ",
-			"Googleクローラがアクセスしたページの、最後のアクセス記録です",
-			"Google化ページ数(ユニーク)",
+			"Googled pages",
+			"Pages accessed by the Google crawler, last access reported",
+			"Number of pages googled",
 			Config_max_googled,
 			&vih->googled,
 			qsort_cmp_time_value);
@@ -3031,9 +3029,9 @@ void vi_print_adsensed_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keytime_report(
 			fp,
-			"Adsense化されたページ",
-			"Adsenseクローラがアクセスしたページの、最後のアクセス記録です",
-			"Adsense化ページ数(ユニーク)",
+			"Adsensed pages",
+			"Pages accessed by the Adsense crawler, last access reported",
+			"Number of pages adsensed",
 			Config_max_adsensed,
 			&vih->adsensed,
 			qsort_cmp_time_value);
@@ -3043,9 +3041,9 @@ void vi_print_referers_age_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keytime_report(
 			fp,
-			"初回訪問時のリファラ",
-			"Google、Yahooを除いた、初回訪問時のリファラを新しい順に並べています",
-			"リファラ数(ユニーク)",
+			"Referers by first time",
+			"Referers ordered by first time date, newer on top (referers from google excluded)",
+			"Different referers",
 			Config_max_referers_age,
 			&vih->referersage,
 			qsort_cmp_time_value);
@@ -3055,9 +3053,9 @@ void vi_print_google_keyphrases_age_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keytime_report(
 			fp,
-			"初回訪問時のGoogle検索キーワード",
-			"初回訪問時の検索キーワードを新しい順に並べています",
-			"リファラ数(ユニーク)",
+			"Google Keyphrases by first time",
+			"Keyphrases ordered by first time date, newer on top",
+			"Different referers",
 			Config_max_google_keyphrases_age,
 			&vih->googlekeyphrasesage,
 			qsort_cmp_time_value);
@@ -3067,9 +3065,9 @@ void vi_print_yahoo_keyphrases_age_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keytime_report(
 			fp,
-			"初回訪問時のYahoo検索キーワード",
-			"初回訪問時の検索キーワードを新しい順に並べています",
-			"リファラ数(ユニーク)",
+			"Yahoo Keyphrases by first time",
+			"Keyphrases ordered by first time date, newer on top",
+			"Different referers",
 			Config_max_yahoo_keyphrases_age,
 			&vih->yahookeyphrasesage,
 			qsort_cmp_time_value);
@@ -3079,9 +3077,9 @@ void vi_print_google_human_language_report(FILE *fp, struct vih *vih)
 {
 	vi_print_generic_keyval_report(
 			fp,
-			"Googleで使用された言語",
-			"Google検索リファラ、パラメータ内の'hl'フィールドです",
-			"言語の種類",
+			"Google Human Language",
+			"The 'hl' field in the query string of google searches",
+			"Different human languages",
 			1000,
 			&vih->googlehumanlanguage,
 			qsort_cmp_long_value);
@@ -3090,9 +3088,9 @@ void vi_print_google_human_language_report(FILE *fp, struct vih *vih)
 void vi_print_screen_res_report(FILE *fp, struct vih *vih) {
 	vi_print_generic_keyval_report(
 			fp,
-			"画面解像度",
-			"ユーザ画面 幅 x 高 解像度",
-			"解像度別",
+			"Screen resolution",
+			"user screen width x height resolution",
+			"Different resolutions",
 			1000,
 			&vih->screenres,
 			qsort_cmp_long_value);
@@ -3101,9 +3099,9 @@ void vi_print_screen_res_report(FILE *fp, struct vih *vih) {
 void vi_print_screen_depth_report(FILE *fp, struct vih *vih) {
 	vi_print_generic_keyval_report(
 			fp,
-			"画面色深度",
-			"ユーザ画面色深度(ピクセル毎のビット数)",
-			"色深度別",
+			"Screen color depth",
+			"user screen color depth in bits per pixel",
+			"Different color depths",
 			1000,
 			&vih->screendepth,
 			qsort_cmp_long_value);
@@ -3113,57 +3111,57 @@ void vi_print_information_report(FILE *fp, struct vih *vih)
 {
 	char buf[VI_LINE_MAX];
 	time_t now = time(NULL);
-	snprintf(buf, VI_LINE_MAX, "生成時刻: %s", ctime(&now));
-	Output->print_title(fp, "サマリ");
-	Output->print_subtitle(fp, "解析されたログファイルの概要です");
+	snprintf(buf, VI_LINE_MAX, "Generated: %s", ctime(&now));
+	Output->print_title(fp, "General information");
+	Output->print_subtitle(fp, "Information about analyzed log files");
 	Output->print_subtitle(fp, buf);
-	Output->print_numkey_info(fp, "処理されたエントリの数", vih->processed);
-	Output->print_numkey_info(fp, "不正なエントリの数", vih->invalid);
-	Output->print_numkey_info(fp, "処理時間(秒)", (vih->endt)-(vih->startt));
+	Output->print_numkey_info(fp, "Number of entries processed", vih->processed);
+	Output->print_numkey_info(fp, "Number of invalid entries", vih->invalid);
+	Output->print_numkey_info(fp, "Processing time in seconds", (vih->endt)-(vih->startt));
 }
 
 void vi_print_report_links(FILE *fp)
 {
 	void *l[] = {
-	"ユニーク訪問者数(日毎)", NULL,
-	"ユニーク訪問者数(月毎)", &Config_process_monthly_visitors,
-	"ユニーク訪問者数(グーグルから/日毎)", NULL,
-	"ユニーク訪問者数(グーグルから/月毎)", &Config_process_monthly_visitors,
-	"ページビュー(訪問者毎)", &Config_process_pageviews,
-	"曜日-時 コンバインドマップ", &Config_process_weekdayhour_map,
-	"月-日 コンバインドマップ", &Config_process_monthday_map,
-	"リクエストページ", NULL,
-	"リクエストされた画像、CSS", NULL,
-	"リファラ", NULL,
-	"初回訪問時のリファラ", &Config_process_referers_age,
-	"ロボット、ウェブスパイダ", &Config_process_robots,
-	"ユーザエージェント", &Config_process_agents,
-	"オペレーティングシステム", &Config_process_os,
-	"ブラウザ", &Config_process_browsers,
-	"404エラー", &Config_process_error404,
-	"ドメイン", &Config_process_tld,
-	"Google化されたページ", &Config_process_google,
-	"Adsense化されたページ", &Config_process_google,
-	"Google検索キーワード", &Config_process_google_keyphrases,
-	"初回訪問時のGoogle検索キーワード", &Config_process_google_keyphrases_age,
-	"Googleで使用された言語", &Config_process_google_human_language,
-	"Yahoo検索キーワード", &Config_process_yahoo_keyphrases,
-	"初回訪問時のYahoo検索キーワード", &Config_process_yahoo_keyphrases_age,
-        "画面解像度", &Config_process_screen_info,
-        "画面色深度", &Config_process_screen_info,
+	"Unique visitors in each day", NULL,
+	"Unique visitors in each month", &Config_process_monthly_visitors,
+	"Unique visitors from Google in each day", NULL,
+	"Unique visitors from Google in each month", &Config_process_monthly_visitors,
+	"Pageviews per visit", &Config_process_pageviews,
+	"Weekday-Hour combined map", &Config_process_weekdayhour_map,
+	"Month-Day combined map", &Config_process_monthday_map,
+	"Requested pages", NULL,
+	"Requested images and CSS", NULL,
+	"Referers", NULL,
+	"Referers by first time", &Config_process_referers_age,
+	"Robots and web spiders", &Config_process_robots,
+	"User agents", &Config_process_agents,
+	"Operating Systems", &Config_process_os,
+	"Browsers", &Config_process_browsers,
+	"404 Errors", &Config_process_error404,
+	"Domains", &Config_process_tld,
+	"Googled pages", &Config_process_google,
+	"Adsensed pages", &Config_process_google,
+	"Google Keyphrases", &Config_process_google_keyphrases,
+	"Google Keyphrases by first time", &Config_process_google_keyphrases_age,
+	"Google Human Language", &Config_process_google_human_language,
+	"Yahoo Keyphrases", &Config_process_yahoo_keyphrases,
+	"Yahho Keyphrases by first time", &Config_process_yahoo_keyphrases_age,
+        "Screen resolution", &Config_process_screen_info,
+        "Screen color depth", &Config_process_screen_info,
 	"Web trails", &Config_process_web_trails,
-	"1日毎のアクセス数分布", NULL,
-	"時間毎のアクセス数分布", NULL,
+	"Weekday distribution", NULL,
+	"Hours distribution", NULL,
 	};
 	unsigned int i, num = 0;
 
-	Output->print_title(fp, "生成されたレポート");
-	Output->print_subtitle(fp, "レポート名をクリックすると、希望の箇所に移動します");
+	Output->print_title(fp, "Generated reports");
+	Output->print_subtitle(fp, "Click on the report name you want to see");
 	for (i = 0; i < sizeof(l)/sizeof(void*); i += 2) {
 		int active = l[i+1] == NULL ? 1 : *((int*)l[i+1]);
 		if (active) num++;
 	}
-	Output->print_numkey_info(fp, "生成されたレポート数", num);
+	Output->print_numkey_info(fp, "Number of reports generated", num);
 	for (i = 0; i < sizeof(l)/sizeof(void*); i += 2) {
 		int active = l[i+1] == NULL ? 1 : *((int*)l[i+1]);
 		if (active)
@@ -3190,12 +3188,12 @@ void vi_print_weekdayhour_map_report(FILE *fp, struct vih *vih)
 			minj = j;
 	}
 
-	Output->print_title(fp, "曜日-時 コンバインドマップ");
-	Output->print_subtitle(fp, "明るくなるにつれて、ヒット数が多いことを意味します");
-	snprintf(buf, VI_LINE_MAX, "最大トラフィック開始時間 %s %s:00 ヒット数",
+	Output->print_title(fp, "Weekday-Hour combined map");
+	Output->print_subtitle(fp, "Brighter means higher level of hits");
+	snprintf(buf, VI_LINE_MAX, "Hour with max traffic starting at %s %s:00 with hits",
 			ylabel[maxj/24], xlabel[maxj%24]);
 	Output->print_numkey_info(fp, buf, hw[maxj]);
-	snprintf(buf, VI_LINE_MAX, "最小トラフィック開始時間 %s %s:00 ヒット数",
+	snprintf(buf, VI_LINE_MAX, "Hour with min traffic starting at %s %s:00 with hits",
 			ylabel[minj/24], xlabel[minj%24]);
 	Output->print_numkey_info(fp, buf, hw[minj]);
 	Output->print_hline(fp);
@@ -3210,8 +3208,8 @@ void vi_print_monthday_map_report(FILE *fp, struct vih *vih)
 		"17", "18", "19", "20", "21", "22", "23", "24",
 		"25", "26", "27", "28", "29", "30", "31"};
 	char *ylabel[12] = {
-		"01月", "02月", "03月", "04月", "05月", "06月",
-		"07月", "08月", "09月", "10月", "11月", "12月",
+		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 	};
 	int j, minj = 0, maxj = 0;
 	int *md = (int*) vih->monthday;
@@ -3225,12 +3223,12 @@ void vi_print_monthday_map_report(FILE *fp, struct vih *vih)
 			minj = j;
 	}
 
-	Output->print_title(fp, "月-日 コンバインドマップ");
-	Output->print_subtitle(fp, "明るくなるにつれて、ヒット数が多いことを意味します");
-	snprintf(buf, VI_LINE_MAX, "最大トラフィック日付 %s %s日 ヒット数",
+	Output->print_title(fp, "Month-Day combined map");
+	Output->print_subtitle(fp, "Brighter means higher level of hits");
+	snprintf(buf, VI_LINE_MAX, "Day with max traffic is %s %s with hits",
 			ylabel[maxj/31], xlabel[maxj%31]);
 	Output->print_numkey_info(fp, buf, md[maxj]);
-	snprintf(buf, VI_LINE_MAX, "最小トラフィック日付 %s %s日 ヒット数",
+	snprintf(buf, VI_LINE_MAX, "Day with min traffic is %s %s with hits",
 			ylabel[minj/31], xlabel[minj%31]);
 	Output->print_numkey_info(fp, buf, md[minj]);
 	Output->print_hline(fp);
