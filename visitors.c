@@ -3675,6 +3675,8 @@ int main(int argc, char **argv)
 			Config_process_google_keyphrases = 1;
 			Config_process_google_keyphrases_age = 1;
 			Config_process_google_human_language = 1;
+			Config_process_yahoo_keyphrases = 1;
+			Config_process_yahoo_keyphrases_age = 1;
 			Config_process_weekdayhour_map = 1;
 			Config_process_monthday_map = 1;
 			Config_process_referers_age = 1;
