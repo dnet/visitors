@@ -1544,6 +1544,8 @@ int vi_process_browsers(struct vih *vih, char *agent)
 		"APT-HTTP", "Apt",
 		"git", "Git",
 		"BlackBerry", NULL,
+		"bot", "Unknown Bot",
+		"Bot", "Unknown Bot",
 		"", "Unknown",
 		NULL, NULL,
 	};
