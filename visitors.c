@@ -1476,6 +1476,7 @@ int vi_process_browsers(struct vih *vih, char *agent)
 		"MSIE 7", "Explorer 7.x",
 		"MSIE 8", "Explorer 8.x",
 		"MSIE 9", "Explorer 9.x",
+		"MSIE 10", "Explorer 10.x",
 		"MSIE", "Explorer unknown version",
 		"Chrome", NULL,
 		"MobileSafari", "MobileSafari",
